@@ -1,0 +1,710 @@
+/**
+ * prose.css
+ * ----------------------------------------------------------------------------
+ * A `.prose` typography system for long-form content (blog posts, articles,
+ * docs) built on top of the existing design tokens (oklch color variables +
+ * Tailwind v4 `@theme inline`). Uses low-specificity `:where()` selectors
+ * throughout so every rule can be overridden with a single utility class or
+ * a more specific author style, and composes automatically with `.dark`
+ * since it only ever reads CSS variables — no color values are hardcoded.
+ *
+ * Usage:
+ *   <article class="prose">
+ *     ...rendered markdown / rich-text HTML...
+ *   </article>
+ *
+ * Size variants:
+ *   .prose-sm  .prose-base (default)  .prose-lg  .prose-xl
+ */
+
+.prose {
+  /* ---- local scale, derived once so every rule below stays in sync ---- */
+  --prose-body: var(--foreground);
+  --prose-heading: var(--foreground);
+  --prose-lead: var(--muted-foreground);
+  --prose-muted: var(--muted-foreground);
+  --prose-link: var(--primary);
+  --prose-link-hover: var(--foreground);
+  --prose-bold: var(--foreground);
+  --prose-counters: var(--muted-foreground);
+  --prose-bullets: var(--border);
+  --prose-hr: var(--border);
+  --prose-quote-border: var(--border);
+  --prose-quote: var(--muted-foreground);
+  --prose-code: var(--foreground);
+  --prose-code-bg: var(--muted);
+  --prose-code-border: var(--border);
+  --prose-pre-bg: var(--secondary);
+  --prose-pre-fg: var(--secondary-foreground);
+  --prose-pre-border: var(--border);
+  --prose-th-border: var(--border);
+  --prose-td-border: var(--border);
+  --prose-th-bg: var(--muted);
+  --prose-caption: var(--muted-foreground);
+  --prose-kbd: var(--foreground);
+  --prose-kbd-bg: var(--muted);
+  --prose-kbd-border: var(--border);
+  --prose-mark-bg: var(--warning);
+  --prose-mark-fg: var(--warning-foreground);
+  --prose-selection-bg: var(--primary);
+  --prose-selection-fg: var(--primary-foreground);
+
+  --prose-font-size: 1rem;
+  --prose-line-height: 1.75;
+
+  max-width: 65ch;
+  font-family: var(--font-sans);
+  font-size: var(--prose-font-size);
+  line-height: var(--prose-line-height);
+  color: var(--prose-body);
+  text-wrap: pretty;
+}
+
+.prose :where(::selection) {
+  background-color: var(--prose-selection-bg);
+  color: var(--prose-selection-fg);
+}
+
+/* ============================== Headings ============================== */
+
+.prose :where(h1, h2, h3, h4, h5, h6):not(:where([class~='not-prose'] *)) {
+  font-family: var(--font-heading);
+  color: var(--prose-heading);
+  font-weight: 700;
+  text-wrap: balance;
+  scroll-margin-top: 6rem;
+}
+
+.prose :where(h1):not(:where([class~='not-prose'] *)) {
+  font-size: 2.25em;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-top: 0;
+  margin-bottom: 0.8888889em;
+  font-weight: 800;
+}
+
+.prose :where(h2):not(:where([class~='not-prose'] *)) {
+  font-size: 1.5em;
+  line-height: 1.3333333;
+  letter-spacing: -0.015em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  font-weight: 700;
+}
+
+.prose :where(h3):not(:where([class~='not-prose'] *)) {
+  font-size: 1.25em;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  font-weight: 600;
+}
+
+.prose :where(h4):not(:where([class~='not-prose'] *)) {
+  font-size: 1.125em;
+  line-height: 1.5555556;
+  margin-top: 1.5555556em;
+  margin-bottom: 0.4444444em;
+  font-weight: 600;
+}
+
+.prose :where(h5):not(:where([class~='not-prose'] *)) {
+  font-size: 1em;
+  line-height: 1.5;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.prose :where(h6):not(:where([class~='not-prose'] *)) {
+  font-size: 0.925em;
+  line-height: 1.5;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  color: var(--prose-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.prose :where(h1, h2, h3, h4, h5, h6) :where(code) {
+  font-size: 0.875em;
+}
+
+/* Heading anchor links (e.g. rehype-autolink-headings) */
+.prose :where(h1, h2, h3, h4, h5, h6) :where(a.anchor) {
+  font-weight: inherit;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.prose :where(h1, h2, h3, h4, h5, h6):hover :where(a.anchor) {
+  opacity: 1;
+}
+
+/* ================================ Text ================================= */
+
+.prose :where(p):not(:where([class~='not-prose'] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose :where(p.lead):not(:where([class~='not-prose'] *)) {
+  font-size: 1.25em;
+  line-height: 1.6;
+  color: var(--prose-lead);
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
+}
+
+.prose :where(strong, b):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-bold);
+  font-weight: 700;
+}
+
+.prose :where(em, i):not(:where([class~='not-prose'] *)) {
+  font-style: italic;
+}
+
+.prose :where(small):not(:where([class~='not-prose'] *)) {
+  font-size: 0.833em;
+  color: var(--prose-muted);
+}
+
+.prose :where(sub, sup):not(:where([class~='not-prose'] *)) {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.prose :where(sup):not(:where([class~='not-prose'] *)) {
+  top: -0.5em;
+}
+.prose :where(sub):not(:where([class~='not-prose'] *)) {
+  bottom: -0.25em;
+}
+
+.prose :where(del, s):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-muted);
+  text-decoration-color: var(--border);
+}
+
+.prose :where(ins):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-body);
+  text-decoration: none;
+  background-color: color-mix(in oklch, var(--success) 18%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0 0.15em;
+}
+
+.prose :where(mark):not(:where([class~='not-prose'] *)) {
+  background-color: var(--prose-mark-bg);
+  color: var(--prose-mark-fg);
+  border-radius: var(--radius-sm);
+  padding: 0.05em 0.3em;
+}
+
+.prose :where(abbr):not(:where([class~='not-prose'] *)) {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  cursor: help;
+}
+
+.prose :where(a):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-link);
+  text-decoration: underline;
+  text-decoration-color: color-mix(
+    in oklch,
+    var(--prose-link) 40%,
+    transparent
+  );
+  text-underline-offset: 3px;
+  font-weight: 500;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+.prose :where(a):hover:not(:where([class~='not-prose'] *)) {
+  color: var(--prose-link-hover);
+  text-decoration-color: currentColor;
+}
+.prose :where(a code):not(:where([class~='not-prose'] *)) {
+  color: inherit;
+}
+
+/* ================================ Lists ================================= */
+
+.prose :where(ul, ol):not(:where([class~='not-prose'] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-inline-start: 1.625em;
+  line-height: 1.15em;
+}
+
+.prose :where(ul):not(:where([class~='not-prose'] *)) {
+  list-style-type: disc;
+}
+
+.prose :where(ol):not(:where([class~='not-prose'] *)) {
+  list-style-type: decimal;
+}
+
+.prose :where(ol[type='A']):not(:where([class~='not-prose'] *)) {
+  list-style-type: upper-alpha;
+}
+.prose :where(ol[type='a']):not(:where([class~='not-prose'] *)) {
+  list-style-type: lower-alpha;
+}
+.prose :where(ol[type='I']):not(:where([class~='not-prose'] *)) {
+  list-style-type: upper-roman;
+}
+.prose :where(ol[type='i']):not(:where([class~='not-prose'] *)) {
+  list-style-type: lower-roman;
+}
+
+.prose :where(li):not(:where([class~='not-prose'] *)) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-inline-start: 0.375em;
+}
+
+.prose :where(li)::marker {
+  color: var(--prose-bullets);
+}
+.prose :where(ol > li)::marker {
+  color: var(--prose-counters);
+  font-weight: 500;
+}
+
+.prose :where(li > p):not(:where([class~='not-prose'] *)) {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+.prose :where(li):first-child > :where(p:first-child) {
+  margin-top: 0;
+}
+.prose :where(li):last-child > :where(p:last-child) {
+  margin-bottom: 0;
+}
+
+.prose :where(ul ul, ul ol, ol ul, ol ol):not(:where([class~='not-prose'] *)) {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Task lists */
+.prose
+  :where(li:has(> input[type='checkbox'])):not(:where([class~='not-prose'] *)) {
+  list-style-type: none;
+  padding-inline-start: 0;
+  margin-inline-start: -1.625em;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+.prose :where(input[type='checkbox']):not(:where([class~='not-prose'] *)) {
+  margin-top: 0.35em;
+  accent-color: var(--primary);
+}
+
+.prose :where(dl):not(:where([class~='not-prose'] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+.prose :where(dt):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-heading);
+  font-weight: 600;
+  margin-top: 1em;
+}
+.prose :where(dd):not(:where([class~='not-prose'] *)) {
+  margin-top: 0.25em;
+  padding-inline-start: 1.625em;
+  color: var(--prose-body);
+}
+
+/* ============================== Blockquote =============================== */
+
+.prose :where(blockquote):not(:where([class~='not-prose'] *)) {
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-inline-start: 1.125em;
+  border-inline-start: 0.25rem solid var(--prose-quote-border);
+  color: var(--prose-quote);
+  font-style: italic;
+}
+.prose :where(blockquote p:first-of-type)::before {
+  content: open-quote;
+}
+.prose :where(blockquote p:last-of-type)::after {
+  content: close-quote;
+}
+.prose :where(blockquote cite):not(:where([class~='not-prose'] *)) {
+  display: block;
+  margin-top: 0.5em;
+  font-style: normal;
+  font-size: 0.875em;
+  color: var(--prose-muted);
+}
+.prose :where(blockquote cite)::before {
+  content: '— ';
+}
+
+/* ================================= Code ================================= */
+
+.prose :where(code):not(:where(pre *, [class~='not-prose'] *)) {
+  font-family: var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--prose-code);
+  background-color: var(--prose-code-bg);
+  border: 1px solid var(--prose-code-border);
+  border-radius: var(--radius-sm);
+  padding: 0.1875em 0.375em;
+  word-break: break-word;
+}
+.prose :where(code)::before,
+.prose :where(code)::after {
+  content: none;
+}
+
+.prose :where(pre):not(:where([class~='not-prose'] *)) {
+  font-family: var(--font-mono, ui-monospace, 'SF Mono', Menlo, monospace);
+  font-size: 0.875em;
+  line-height: 1.7142857;
+  color: var(--prose-pre-fg);
+  background-color: var(--prose-pre-bg);
+  border: 1px solid var(--prose-pre-border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin-top: 1.7142857em;
+  margin-bottom: 1.7142857em;
+  padding: 1em 1.25em;
+  tab-size: 2;
+}
+.prose :where(pre code):not(:where([class~='not-prose'] *)) {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 400;
+  color: inherit;
+  font-size: inherit;
+}
+
+/* Optional filename/toolbar for fenced code blocks (e.g. rehype-pretty-code) */
+.prose
+  :where([data-rehype-pretty-code-title]):not(:where([class~='not-prose'] *)) {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.8125em;
+  color: var(--prose-muted);
+  background-color: var(--prose-pre-bg);
+  border: 1px solid var(--prose-pre-border);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 0.5em 1.25em;
+  margin-top: 1.7142857em;
+}
+.prose :where([data-rehype-pretty-code-title]) + pre {
+  margin-top: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.prose :where(pre [data-line-numbers] > span)::before {
+  content: counter(line);
+  counter-increment: line;
+  display: inline-block;
+  width: 1.75rem;
+  margin-inline-end: 1rem;
+  text-align: right;
+  color: var(--prose-muted);
+}
+.prose :where(pre [data-highlighted-line]) {
+  background-color: color-mix(in oklch, var(--info) 12%, transparent);
+  border-inline-start: 2px solid var(--info);
+  padding-inline-start: calc(1.25em - 2px);
+  margin-inline-start: -1.25em;
+  margin-inline-end: -1.25em;
+  padding-inline-end: 1.25em;
+}
+
+.prose :where(kbd):not(:where([class~='not-prose'] *)) {
+  font-family: var(--font-sans);
+  font-size: 0.8125em;
+  font-weight: 500;
+  color: var(--prose-kbd);
+  background-color: var(--prose-kbd-bg);
+  border: 1px solid var(--prose-kbd-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 0.1875em 0.5em;
+  box-shadow: 0 1px 0 var(--prose-kbd-border);
+}
+
+.prose :where(samp):not(:where([class~='not-prose'] *)) {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.875em;
+}
+
+/* ================================ Tables ================================= */
+
+.prose :where(table):not(:where([class~='not-prose'] *)) {
+  width: 100%;
+  table-layout: auto;
+  text-align: start;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  font-size: 0.875em;
+  line-height: 1.5714286;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose :where(thead):not(:where([class~='not-prose'] *)) {
+  border-bottom: 1px solid var(--prose-th-border);
+}
+.prose :where(thead th):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-heading);
+  font-weight: 600;
+  background-color: var(--prose-th-bg);
+  vertical-align: bottom;
+  padding: 0.625em 0.75em;
+  text-align: start;
+}
+.prose :where(thead th:first-child) {
+  border-start-start-radius: var(--radius-md);
+}
+.prose :where(thead th:last-child) {
+  border-start-end-radius: var(--radius-md);
+}
+
+.prose :where(tbody tr):not(:where([class~='not-prose'] *)) {
+  border-bottom: 1px solid var(--prose-td-border);
+}
+.prose :where(tbody tr:last-child) {
+  border-bottom: none;
+}
+.prose :where(tbody tr:nth-child(even)) {
+  background-color: color-mix(in oklch, var(--muted) 45%, transparent);
+}
+
+.prose :where(tbody td, tfoot td):not(:where([class~='not-prose'] *)) {
+  vertical-align: top;
+  padding: 0.625em 0.75em;
+}
+
+.prose :where(tfoot):not(:where([class~='not-prose'] *)) {
+  border-top: 1px solid var(--prose-th-border);
+  font-weight: 600;
+}
+
+.prose :where(table :is(th, td)[align='center']) {
+  text-align: center;
+}
+.prose :where(table :is(th, td)[align='end']) {
+  text-align: end;
+}
+
+.prose :where(caption):not(:where([class~='not-prose'] *)) {
+  caption-side: bottom;
+  font-size: 0.8125em;
+  color: var(--prose-caption);
+  margin-top: 0.75em;
+}
+
+/* =========================== Media & Embeds ============================= */
+
+.prose
+  :where(img, video, iframe, embed, object, canvas):not(
+    :where([class~='not-prose'] *)
+  ) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.prose :where(iframe, embed, object):not(:where([class~='not-prose'] *)) {
+  border: 1px solid var(--border);
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+.prose :where(figure):not(:where([class~='not-prose'] *)) {
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+.prose :where(figure > *) {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.prose :where(figcaption):not(:where([class~='not-prose'] *)) {
+  color: var(--prose-caption);
+  font-size: 0.875em;
+  line-height: 1.4285714;
+  margin-top: 0.8571429em;
+  text-align: center;
+}
+
+.prose :where(picture > img):not(:where([class~='not-prose'] *)) {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* ============================ Structure & misc =========================== */
+
+.prose :where(hr):not(:where([class~='not-prose'] *)) {
+  border: none;
+  border-top: 1px solid var(--prose-hr);
+  margin-top: 3em;
+  margin-bottom: 3em;
+}
+
+.prose :where(details):not(:where([class~='not-prose'] *)) {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0.75em 1em;
+}
+.prose :where(summary):not(:where([class~='not-prose'] *)) {
+  font-weight: 600;
+  color: var(--prose-heading);
+  cursor: pointer;
+}
+.prose :where(details[open] summary) {
+  margin-bottom: 0.5em;
+}
+
+.prose :where(address):not(:where([class~='not-prose'] *)) {
+  font-style: normal;
+  color: var(--prose-muted);
+}
+
+/* --------------------------- Margin collapsing --------------------------- */
+
+.prose > :where(*):first-child {
+  margin-top: 0;
+}
+.prose > :where(*):last-child {
+  margin-bottom: 0;
+}
+
+/* ================================================================
+ * Size variants — apply alongside `.prose`, e.g. `class="prose prose-lg"`
+ * ================================================================ */
+
+.prose-sm {
+  --prose-font-size: 0.875rem;
+  --prose-line-height: 1.7142857;
+}
+
+.prose-lg {
+  --prose-font-size: 1.125rem;
+  --prose-line-height: 1.7777778;
+}
+
+.prose-xl {
+  --prose-font-size: 1.25rem;
+  --prose-line-height: 1.8;
+}
+
+.prose-sm,
+.prose-lg,
+.prose-xl {
+  font-size: var(--prose-font-size);
+  line-height: var(--prose-line-height);
+}
+
+/* ================================================================
+ * Inverted variant for dark surfaces regardless of the page theme
+ * (e.g. a `.prose` block placed on a `--primary`-colored hero card)
+ * ================================================================ */
+
+.prose-invert {
+  --prose-body: var(--primary-foreground);
+  --prose-heading: var(--primary-foreground);
+  --prose-lead: color-mix(in oklch, var(--primary-foreground) 80%, transparent);
+  --prose-muted: color-mix(
+    in oklch,
+    var(--primary-foreground) 65%,
+    transparent
+  );
+  --prose-link: var(--primary-foreground);
+  --prose-link-hover: color-mix(
+    in oklch,
+    var(--primary-foreground) 80%,
+    transparent
+  );
+  --prose-bold: var(--primary-foreground);
+  --prose-counters: color-mix(
+    in oklch,
+    var(--primary-foreground) 65%,
+    transparent
+  );
+  --prose-bullets: color-mix(
+    in oklch,
+    var(--primary-foreground) 40%,
+    transparent
+  );
+  --prose-hr: color-mix(in oklch, var(--primary-foreground) 25%, transparent);
+  --prose-quote-border: color-mix(
+    in oklch,
+    var(--primary-foreground) 40%,
+    transparent
+  );
+  --prose-quote: color-mix(
+    in oklch,
+    var(--primary-foreground) 80%,
+    transparent
+  );
+  --prose-code: var(--primary-foreground);
+  --prose-code-bg: color-mix(
+    in oklch,
+    var(--primary-foreground) 12%,
+    transparent
+  );
+  --prose-code-border: color-mix(
+    in oklch,
+    var(--primary-foreground) 25%,
+    transparent
+  );
+  --prose-pre-bg: color-mix(in oklch, black 30%, var(--primary));
+  --prose-pre-fg: var(--primary-foreground);
+  --prose-pre-border: color-mix(
+    in oklch,
+    var(--primary-foreground) 20%,
+    transparent
+  );
+  --prose-th-border: color-mix(
+    in oklch,
+    var(--primary-foreground) 25%,
+    transparent
+  );
+  --prose-td-border: color-mix(
+    in oklch,
+    var(--primary-foreground) 15%,
+    transparent
+  );
+  --prose-th-bg: color-mix(in oklch, var(--primary-foreground) 8%, transparent);
+  --prose-caption: color-mix(
+    in oklch,
+    var(--primary-foreground) 65%,
+    transparent
+  );
+  --prose-kbd: var(--primary-foreground);
+  --prose-kbd-bg: color-mix(
+    in oklch,
+    var(--primary-foreground) 12%,
+    transparent
+  );
+  --prose-kbd-border: color-mix(
+    in oklch,
+    var(--primary-foreground) 25%,
+    transparent
+  );
+}
